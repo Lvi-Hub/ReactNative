@@ -41,7 +41,20 @@ const LoginScreen = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
+  //--
+  // const primary = "#E8E8E8";
+  // const secondary = "#FF6C00";
+  // const [inputBorderColor, setInputBorderColor] = useState(primary);
 
+  // const customOnFocus = () => {
+  //   setInputBorderColor(secondary);
+  //   console.log("Focus");
+  // };
+
+  // const customOnBlur = () => {
+  //   setInputBorderColor(primary);
+  //   console.log("Blur");
+  // };
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -115,7 +128,6 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     position: "relative",
   },
   image: {
@@ -136,32 +148,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     justifyContent: "flex-start",
   },
-  avatarContainer: {
-    position: "absolute",
-    top: -60,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    zIndex: 10,
-  },
-  avatarBtn: {
-    flex: 1,
-    position: "relative",
-  },
-  avatarIcon: {
-    width: 25,
-    height: 25,
-    position: "absolute",
-    top: 81,
-    right: -12,
-  },
 
   inputList: {
     gap: 16,
   },
 
   titleText: {
-    marginTop: 92,
+    marginTop: 32,
     paddingBottom: 32,
     fontFamily: "RobotoMedium",
     fontWeight: 500,
