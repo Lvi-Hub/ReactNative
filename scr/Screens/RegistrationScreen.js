@@ -21,119 +21,118 @@ const RegistrationScreen = () => {
   const avatarWidth = 120;
   const avatarPosition = Math.round(width / 2 - avatarWidth / 2);
 
-  console.log(avatarPosition);
-
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true); // or some other action
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false); // or some other action
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
+  //-- state
+  const [isFocused, setIsFocused] = useState({
+    login: false,
+    email: false,
+    password: false,
+  });
+  //-- handlers
+  const handleInputFocus = (textinput) => {
+    setIsFocused({
+      [textinput]: true,
+    });
+  };
+  const handleInputBlur = (textinput) => {
+    setIsFocused({
+      [textinput]: false,
+    });
+  };
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../img/backgroundImage.jpg")}
-        // resizeMode="cover"
-        resizeMode="stretch"
-        alignSelf="flex-end"
-        style={styles.image}
-      >
-        <View style={styles.section}>
-          <View
-            style={[
-              styles.avatarContainer,
-              { left: avatarPosition, width: avatarWidth },
-            ]}
-          >
-            <TouchableOpacity
-              style={styles.avatarBtn}
-              onPress={() => Alert.alert("Add Avatar")}
-            >
-              <Image
-                style={styles.avatarIcon}
-                source={require("../img/add.png")}
-              ></Image>
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.titleText}>Реєстрація</Text>
-          <View style={styles.inputList}>
-            <TextInput
-              style={styles.inputLogin}
-              placeholder="Логін"
-            ></TextInput>
-
-            <TextInput
-              style={styles.inputLogin}
-              placeholder="Адреса електронної пошти"
-            ></TextInput>
-
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../img/backgroundImage.jpg")}
+          // resizeMode="cover"
+          resizeMode="stretch"
+          alignSelf="flex-end"
+          style={styles.image}
+        >
+          <View style={styles.section}>
             <View
-              paddingBottom={
-                !Platform.OS === "ios" && isKeyboardVisible ? 0 : 20
-              }
+              style={[
+                styles.avatarContainer,
+                { left: avatarPosition, width: avatarWidth },
+              ]}
             >
-              <TextInput
-                style={styles.inputLogin}
-                placeholder="Пароль"
-              ></TextInput>
-
-              {(!isKeyboardVisible || Platform.OS === "ios") && (
-                <TouchableOpacity
-                  style={styles.showPasswordBtn}
-                  onPress={() => Alert.alert("Simple Button pressed")}
-                >
-                  <Text style={styles.showPasswordText}>Показати</Text>
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                style={styles.avatarBtn}
+                onPress={() => Alert.alert("Add Avatar")}
+              >
+                <Image
+                  style={styles.avatarIcon}
+                  source={require("../img/add.png")}
+                ></Image>
+              </TouchableOpacity>
             </View>
-          </View>
 
-          {(!isKeyboardVisible || Platform.OS === "ios") && (
+            <Text style={styles.titleText}>Реєстрація</Text>
+
+            <KeyboardAvoidingView // визначаємо ОС та налаштовуємо поведінку клавіатури
+              behavior={Platform.OS == "ios" ? "padding" : "height"}
+            >
+              <View style={styles.inputList}>
+                <TextInput
+                  style={[
+                    styles.inputLogin,
+                    isFocused.login && styles.inputLoginFocus,
+                  ]}
+                  placeholder="Логін"
+                  placeholderTextColor={"#BDBDBD"}
+                  onFocus={() => handleInputFocus("login")}
+                  onBlur={() => handleInputBlur("login")}
+                ></TextInput>
+
+                <TextInput
+                  style={[
+                    styles.inputLogin,
+                    isFocused.email && styles.inputLoginFocus,
+                  ]}
+                  placeholder="Адреса електронної пошти"
+                  placeholderTextColor={"#BDBDBD"}
+                  onFocus={() => handleInputFocus("email")}
+                  onBlur={() => handleInputBlur("email")}
+                ></TextInput>
+
+                <View>
+                  <TextInput
+                    style={[
+                      styles.inputLogin,
+                      isFocused.password && styles.inputLoginFocus,
+                    ]}
+                    placeholder="Пароль"
+                    placeholderTextColor={"#BDBDBD"}
+                    onFocus={() => handleInputFocus("password")}
+                    onBlur={() => handleInputBlur("password")}
+                  ></TextInput>
+
+                  <TouchableOpacity
+                    style={styles.showPasswordBtn}
+                    onPress={() => Alert.alert("Simple Button pressed")}
+                  >
+                    <Text style={styles.showPasswordText}>Показати</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </KeyboardAvoidingView>
+
             <TouchableOpacity
               style={styles.appButtonContainer}
               onPress={() => Alert.alert("Simple Button pressed")}
             >
               <Text style={styles.appButtonText}>Зареєструватися</Text>
             </TouchableOpacity>
-          )}
 
-          {(!isKeyboardVisible || Platform.OS === "ios") && (
             <TouchableOpacity
               onPress={() => Alert.alert("Simple Button pressed !!!")}
             >
-              <Text
-                style={[
-                  styles.singInText,
-                  {
-                    paddingBottom:
-                      Platform.OS === "ios" && isKeyboardVisible ? 220 : 78,
-                  },
-                ]}
-              >
-                Вже є акаунт? Увійти
-              </Text>
+              <Text style={styles.singInText}>Вже є акаунт? Увійти</Text>
             </TouchableOpacity>
-          )}
-        </View>
-      </ImageBackground>
-    </View>
+          </View>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -153,7 +152,9 @@ const styles = StyleSheet.create({
   },
 
   section: {
+    // flex: 1,
     marginTop: 263,
+    paddingBottom: 76,
     paddingLeft: 16,
     paddingRight: 16,
     backgroundColor: "white",
@@ -185,6 +186,10 @@ const styles = StyleSheet.create({
     gap: 16,
   },
 
+  inputItem: {
+    color: "#212121",
+  },
+
   titleText: {
     marginTop: 92,
     paddingBottom: 32,
@@ -206,13 +211,15 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     fontSize: 16,
     lineHeight: 18.75,
-    color: "#BDBDBD",
+    color: "#212121",
     backgroundColor: "#F6F6F6",
-
     borderColor: "#E8E8E8",
     borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 6,
+  },
+  inputLoginFocus: {
+    borderColor: "#FF6C00",
   },
   showPasswordBtn: {
     position: "absolute",
@@ -239,6 +246,7 @@ const styles = StyleSheet.create({
   },
   singInText: {
     marginTop: 16,
+
     justifyContent: "center",
     fontFamily: "RobotoRegular",
     fontSize: 16,
