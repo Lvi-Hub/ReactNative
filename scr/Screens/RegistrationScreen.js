@@ -14,12 +14,18 @@ import {
   Keyboard,
   Dimensions,
   Image,
+  SafeAreaView,
 } from "react-native";
 
 const RegistrationScreen = () => {
   const { width } = Dimensions.get("screen");
   const avatarWidth = 120;
   const avatarPosition = Math.round(width / 2 - avatarWidth / 2);
+
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [hidePass, setHidePass] = useState(true);
 
   //-- state
   const [isFocused, setIsFocused] = useState({
@@ -39,39 +45,45 @@ const RegistrationScreen = () => {
     });
   };
 
+  //onSignin
+  const onSignin = () => {
+    console.log(`Login: ${login}`);
+    console.log(`Email: ${email}`);
+    console.log(`Password: ${password}`);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <ImageBackground
           source={require("../img/backgroundImage.jpg")}
-          // resizeMode="cover"
           resizeMode="stretch"
           alignSelf="flex-end"
           style={styles.image}
         >
           <View style={styles.section}>
-            <View
-              style={[
-                styles.avatarContainer,
-                { left: avatarPosition, width: avatarWidth },
-              ]}
-            >
-              <TouchableOpacity
-                style={styles.avatarBtn}
-                onPress={() => Alert.alert("Add Avatar")}
-              >
-                <Image
-                  style={styles.avatarIcon}
-                  source={require("../img/add.png")}
-                ></Image>
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.titleText}>Реєстрація</Text>
-
             <KeyboardAvoidingView // визначаємо ОС та налаштовуємо поведінку клавіатури
               behavior={Platform.OS == "ios" ? "padding" : "height"}
             >
+              <View
+                style={[
+                  styles.avatarContainer,
+                  { left: avatarPosition, width: avatarWidth },
+                ]}
+              >
+                <TouchableOpacity
+                  style={styles.avatarBtn}
+                  onPress={() => Alert.alert("Add Avatar")}
+                >
+                  <Image
+                    style={styles.avatarIcon}
+                    source={require("../img/add.png")}
+                  ></Image>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.titleText}>Реєстрація</Text>
+
               <View style={styles.inputList}>
                 <TextInput
                   style={[
@@ -82,6 +94,8 @@ const RegistrationScreen = () => {
                   placeholderTextColor={"#BDBDBD"}
                   onFocus={() => handleInputFocus("login")}
                   onBlur={() => handleInputBlur("login")}
+                  value={login}
+                  onChangeText={setLogin}
                 ></TextInput>
 
                 <TextInput
@@ -93,6 +107,8 @@ const RegistrationScreen = () => {
                   placeholderTextColor={"#BDBDBD"}
                   onFocus={() => handleInputFocus("email")}
                   onBlur={() => handleInputBlur("email")}
+                  value={email}
+                  onChangeText={setEmail}
                 ></TextInput>
 
                 <View>
@@ -105,30 +121,34 @@ const RegistrationScreen = () => {
                     placeholderTextColor={"#BDBDBD"}
                     onFocus={() => handleInputFocus("password")}
                     onBlur={() => handleInputBlur("password")}
+                    secureTextEntry={hidePass ? true : false}
+                    value={password}
+                    onChangeText={setPassword}
                   ></TextInput>
 
                   <TouchableOpacity
                     style={styles.showPasswordBtn}
-                    onPress={() => Alert.alert("Simple Button pressed")}
+                    onPress={() => setHidePass(!hidePass)}
                   >
                     <Text style={styles.showPasswordText}>Показати</Text>
                   </TouchableOpacity>
                 </View>
               </View>
+
+              <TouchableOpacity
+                style={styles.appButtonContainer}
+                // onPress={() => Alert.alert("Simple Button pressed")}
+                onPress={onSignin}
+              >
+                <Text style={styles.appButtonText}>Зареєструватися</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => Alert.alert("Simple Button pressed !!!")}
+              >
+                <Text style={styles.singInText}>Вже є акаунт? Увійти</Text>
+              </TouchableOpacity>
             </KeyboardAvoidingView>
-
-            <TouchableOpacity
-              style={styles.appButtonContainer}
-              onPress={() => Alert.alert("Simple Button pressed")}
-            >
-              <Text style={styles.appButtonText}>Зареєструватися</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => Alert.alert("Simple Button pressed !!!")}
-            >
-              <Text style={styles.singInText}>Вже є акаунт? Увійти</Text>
-            </TouchableOpacity>
           </View>
         </ImageBackground>
       </View>
@@ -139,7 +159,6 @@ const RegistrationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     position: "relative",
   },
   image: {
@@ -153,7 +172,8 @@ const styles = StyleSheet.create({
 
   section: {
     // flex: 1,
-    marginTop: 263,
+    // marginTop: 263,
+    marginTop: 200,
     paddingBottom: 76,
     paddingLeft: 16,
     paddingRight: 16,
@@ -183,6 +203,7 @@ const styles = StyleSheet.create({
   },
 
   inputList: {
+    // flex: 1,
     gap: 16,
   },
 

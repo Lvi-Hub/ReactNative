@@ -6,6 +6,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
   View,
   Platform,
   Keyboard,
@@ -14,114 +16,112 @@ import {
 } from "react-native";
 
 const LoginScreen = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [hidePass, setHidePass] = useState(true);
+
   const { width } = Dimensions.get("screen");
   const avatarWidth = 120;
   const avatarPosition = Math.round(width / 2 - avatarWidth / 2);
 
-  console.log(avatarPosition);
+  //-- state
+  const [isFocused, setIsFocused] = useState({
+    email: false,
+    password: false,
+  });
+  //-- handlers
+  const handleInputFocus = (textinput) => {
+    setIsFocused({
+      [textinput]: true,
+    });
+  };
+  const handleInputBlur = (textinput) => {
+    setIsFocused({
+      [textinput]: false,
+    });
+  };
 
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  //onSignup
+  const onSignup = () => {
+    console.log(`Email: ${email}`);
+    console.log(`Password: ${password}`);
+  };
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true); // or some other action
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false); // or some other action
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
-  //--
-  // const primary = "#E8E8E8";
-  // const secondary = "#FF6C00";
-  // const [inputBorderColor, setInputBorderColor] = useState(primary);
-
-  // const customOnFocus = () => {
-  //   setInputBorderColor(secondary);
-  //   console.log("Focus");
-  // };
-
-  // const customOnBlur = () => {
-  //   setInputBorderColor(primary);
-  //   console.log("Blur");
-  // };
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../img/backgroundImage.jpg")}
-        // resizeMode="cover"
-        resizeMode="stretch"
-        alignSelf="flex-end"
-        style={styles.image}
-      >
-        <View style={styles.section}>
-          <Text style={styles.titleText}>Увійти</Text>
-          <View style={styles.inputList}>
-            <TextInput
-              style={styles.inputLogin}
-              placeholder="Адреса електронної пошти"
-            ></TextInput>
-
-            <View
-              paddingBottom={
-                !Platform.OS === "ios" && isKeyboardVisible ? 0 : 20
-              }
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../img/backgroundImage.jpg")}
+          resizeMode="stretch"
+          alignSelf="flex-end"
+          style={styles.image}
+        >
+          <View>
+            <KeyboardAvoidingView // визначаємо ОС та налаштовуємо поведінку клавіатури
+              behavior={Platform.OS == "ios" ? "padding" : "height"}
             >
-              <TextInput
-                style={styles.inputLogin}
-                placeholder="Пароль"
-              ></TextInput>
+              <View style={styles.section}>
+                <Text style={styles.titleText}>Увійти</Text>
+                <View style={styles.inputList}>
+                  {/* INPUT : EMAIL */}
 
-              {(!isKeyboardVisible || Platform.OS === "ios") && (
+                  <TextInput
+                    style={[
+                      styles.inputLogin,
+                      isFocused.email && styles.inputLoginFocus,
+                    ]}
+                    placeholder="Адреса електронної пошти"
+                    placeholderTextColor={"#BDBDBD"}
+                    onFocus={() => handleInputFocus("email")}
+                    onBlur={() => handleInputBlur("email")}
+                    value={email}
+                    onChangeText={setEmail}
+                  ></TextInput>
+                  <View>
+                    {/*----INPUT : PASSWORD */}
+
+                    <TextInput
+                      style={[
+                        styles.inputLogin,
+                        isFocused.password && styles.inputLoginFocus,
+                      ]}
+                      placeholder="Пароль"
+                      placeholderTextColor={"#BDBDBD"}
+                      onFocus={() => handleInputFocus("password")}
+                      onBlur={() => handleInputBlur("password")}
+                      secureTextEntry={hidePass ? true : false}
+                      value={password}
+                      onChangeText={setPassword}
+                    ></TextInput>
+                    <TouchableOpacity
+                      style={styles.showPasswordBtn}
+                      onPress={() => setHidePass(!hidePass)}
+                    >
+                      <Text style={styles.showPasswordText}>Показати</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
                 <TouchableOpacity
-                  style={styles.showPasswordBtn}
-                  onPress={() => Alert.alert("Simple Button pressed")}
+                  style={styles.appButtonContainer}
+                  // onPress={() => Alert.alert("Simple Button pressed")}
+                  onPress={onSignup}
                 >
-                  <Text style={styles.showPasswordText}>Показати</Text>
+                  <Text style={styles.appButtonText}>Увійти</Text>
                 </TouchableOpacity>
-              )}
-            </View>
+                <TouchableOpacity
+                  onPress={() => Alert.alert("Simple Button pressed !!!")}
+                >
+                  <Text style={styles.singInText}>
+                    Не має аккаунту? Зареєструватися
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>
           </View>
-
-          {(!isKeyboardVisible || Platform.OS === "ios") && (
-            <TouchableOpacity
-              style={styles.appButtonContainer}
-              onPress={() => Alert.alert("Simple Button pressed")}
-            >
-              <Text style={styles.appButtonText}>Увійти</Text>
-            </TouchableOpacity>
-          )}
-
-          {(!isKeyboardVisible || Platform.OS === "ios") && (
-            <TouchableOpacity
-              onPress={() => Alert.alert("Simple Button pressed !!!")}
-            >
-              <Text
-                style={[
-                  styles.singInText,
-                  {
-                    paddingBottom:
-                      Platform.OS === "ios" && isKeyboardVisible ? 220 : 78,
-                  },
-                ]}
-              >
-                Не має аккаунту? Зареєструватися
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </ImageBackground>
-    </View>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -140,9 +140,10 @@ const styles = StyleSheet.create({
   },
 
   section: {
-    marginTop: 263,
+    // marginTop: 263,
     paddingLeft: 16,
     paddingRight: 16,
+    paddingBottom: 144,
     backgroundColor: "white",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -174,13 +175,16 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     fontSize: 16,
     lineHeight: 18.75,
-    color: "#BDBDBD",
+    color: "#212121",
     backgroundColor: "#F6F6F6",
 
     borderColor: "#E8E8E8",
     borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 6,
+  },
+  inputLoginFocus: {
+    borderColor: "#FF6C00",
   },
   showPasswordBtn: {
     position: "absolute",

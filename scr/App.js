@@ -26,7 +26,7 @@ export default function App() {
   }
 
   return (
-    <View style={styles.viewContainers}>
+    <View style={styles.viewContainers} onLayout={onLayoutRootView}>
       {/* <BackGround /> */}
       <LoginScreen />
       {/* <RegistrationScreen /> */}
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: "#fff",
     // alignItems: "center",
-    // justifyContent: "center",
+    // justäifyContent: "center",
     // paddingTop: 20,
   },
 });
